@@ -17,4 +17,4 @@
 #include "request.hpp"
 #include "spider.hpp"
 #include "parser.hpp"
-
+#include "serialization.hpp"

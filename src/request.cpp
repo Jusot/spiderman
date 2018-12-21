@@ -122,4 +122,3 @@ Response Request::get(::std::string url, ::std::unordered_map<::std::string, ::s
 
     return request(url, "GET ", hds);
 }
-
