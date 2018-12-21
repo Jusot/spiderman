@@ -14,5 +14,7 @@
 #include <sys/socket.h>
 
 
-#include "crq.hpp"
+#include "request.hpp"
+#include "spider.hpp"
+#include "parser.hpp"
 
