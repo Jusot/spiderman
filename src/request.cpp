@@ -1,7 +1,9 @@
 #include "PUEF.hpp"
 
 
-Response::Response(::std::string &data)
+Response::Response() : status_code(400) {}
+
+Response::Response(const ::std::string &data)
 {
     ::std::stringstream ss(data);
     ss >> reason; ss >> status_code; ss.get();
@@ -109,7 +111,7 @@ Response Request::request(const ::std::string &url, const ::std::string method, 
     return Response(response_msg);
 }
 
-Response Request::get(::std::string url, ::std::unordered_map<::std::string, ::std::string> headers = {})
+Response Request::get(::std::string url, ::std::unordered_map<::std::string, ::std::string> headers)
 {
     decltype(headers) hds = {
             {"Host", gen_host(url)},

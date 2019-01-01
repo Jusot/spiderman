@@ -6,15 +6,13 @@ class Response
 public:
 
     int           status_code;
-    ::std::string reason;
-    ::std::string body;
+    ::std::string reason, body;
 
     ::std::unordered_map<::std::string, ::std::string> headers;
 
 
-    Response() : status_code(400) {}
-
-    Response(::std::string &data);
+    Response();
+    Response(const ::std::string &data);
 
     Response(Response &&res) noexcept = default;
     ~Response() = default;
@@ -38,6 +36,6 @@ private:
 
 public:
 
-    static Response get(::std::string url, ::std::unordered_map<::std::string, ::std::string> headers);
+    static Response get(::std::string url, ::std::unordered_map<::std::string, ::std::string> headers = {});
         
 };
