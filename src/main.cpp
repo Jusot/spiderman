@@ -3,35 +3,31 @@
 
 int main(int argc, char *argv[])
 {
-    /* 
-
-    threadsafe_queue<Result> results;
+    threadsafe_queue<::std::string> results;
 
     Spider spdr("www.gmw.cn", "www.gmw.cn");
-    
-    // multi threads
-    // define spdr.finish() for subthread
+
+    ::std::vector<::std::thread> threads;
 
     // main thread
-    {
-        spdr.run(results);
-    }
+    threads.emplace_back([&] {spdr.run(results); });
 
     // sub thread
+    for (int i = 0; i < 5; ++i) threads.emplace_back([&] 
     {
-        Result result;
+        ::std::string result;
 
         while (!spdr.finish() || !results.is_empty())
         {
             if (results.try_pop(result))
             {
-                auto res = Parser::parser(result);
-                Serialization::write2file(res, "./");
+                auto website = Parser::parser(result);
+                Serialization::write2file(website, "./");
             }
         }
-    }
+    });
 
-    */
+    for (auto &td : threads) td.join();
 
     return 0;
 }
