@@ -12,16 +12,19 @@ bool Spider::has_processed(const ::std::string &url)
     return processed.count(url);
 }
 
-// need to complete
 bool Spider::meet_limit(const ::std::string &url)
 {
-    
+    return url.find(url_limit) != url.npos;
 }
 
 // need to complete
 ::std::vector<::std::string> Spider::gen_urls(const::std::string & str)
 {
+    ::std::vector<::std::string> urls;
 
+    // TODO: parser input content and generate new urls in this content
+
+    return urls;
 }
 
 bool Spider::finish()
