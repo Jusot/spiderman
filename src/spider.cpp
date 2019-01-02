@@ -18,11 +18,21 @@ bool Spider::meet_limit(const ::std::string &url)
 }
 
 // need to complete
-::std::vector<::std::string> Spider::gen_urls(const::std::string & str)
+::std::vector<::std::string> Spider::gen_urls(const ::std::string &str)
 {
     ::std::vector<::std::string> urls;
 
     // TODO: parser input content and generate new urls in this content
+    auto it = str.cbegin();
+
+    while (it != str.cend())
+    {
+        if (*it == 'h')
+        {
+            // TODO: check 'href="[^"]+"'
+        }
+        ++it;
+    }
 
     return urls;
 }
