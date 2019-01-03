@@ -26,15 +26,13 @@ public:
 
 class Request
 {
-private:
+public:
 
     static ::std::string gen_host(::std::string url);
 
     static ::std::string gen_req(::std::string url);
 
     static Response request(const ::std::string &url, const ::std::string method, ::std::unordered_map<::std::string, ::std::string> &headers);
-
-public:
 
     static Response get(::std::string url, ::std::unordered_map<::std::string, ::std::string> headers = {});
         
