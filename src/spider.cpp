@@ -1,7 +1,7 @@
 #include "PUEF.hpp"
 
 
-Spider::Spider(const ::std::string url, const ::std::string url_limit) : finish_status(false), url_limit(url_limit)
+Spider::Spider(const ::std::string url, const ::std::string url_limit) : finish_status(false), host(Request::gen_host(url)), url_limit(url_limit)
 {
     if (url_limit == "") this->url_limit = url;
     unprocessed.push(url);
@@ -12,26 +12,48 @@ bool Spider::has_processed(const ::std::string &url)
     return processed.count(url);
 }
 
+bool Spider::is_legal_and_complete(::std::string &url)
+{
+    if (url.find('/') == 0)
+    {
+        url = host + url;
+        return true;
+    }
+    else if (url.find("http") != url.npos || url.find("www") != url.npos) return true;
+    else return false;
+}
+
 bool Spider::meet_limit(const ::std::string &url)
 {
     return url.find(url_limit) != url.npos;
 }
 
-// need to complete
 ::std::vector<::std::string> Spider::gen_urls(const ::std::string &str)
 {
     ::std::vector<::std::string> urls;
 
-    // TODO: parser input content and generate new urls in this content
     auto it = str.cbegin();
+
+    auto safe_check = [&](char c) -> bool
+    {
+        return (it == str.cend()) ? false : (*it++ == c);
+    };
+
+    auto checkpre = [&](::std::string s) -> bool
+    {
+        for (auto c : s) if (!safe_check(c)) return false;
+        return true;
+    };
 
     while (it != str.cend())
     {
-        if (*it == 'h')
+        if (checkpre("href=\""))
         {
-            // TODO: check 'href="[^"]+"'
+            ::std::string url;
+            while (it != str.cend() && *it != '"') url += *it++;
+
+            if (is_legal_and_complete(url)) urls.push_back(url);
         }
-        ++it;
     }
 
     return urls;
