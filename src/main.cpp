@@ -21,8 +21,7 @@ int main(int argc, char *argv[])
         {
             if (results.try_pop(result))
             {
-                auto website = Parser::parser(result);
-                Serialization::write2file(website, "./results/");
+                Serialization::write2file(Parser::parser(result), "./results/");
             }
         }
     });
