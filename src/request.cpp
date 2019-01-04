@@ -111,7 +111,7 @@ Response Request::request(const ::std::string &url, const ::std::string method, 
     return Response(response_msg);
 }
 
-Response Request::get(::std::string url, ::std::unordered_map<::std::string, ::std::string> headers)
+Response Request::get(const ::std::string &url, ::std::unordered_map<::std::string, ::std::string> headers)
 {
     decltype(headers) hds = {
             {"Host", gen_host(url)},
