@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
         {
             if (results.try_pop(result))
             {
-                Serialization::write2file(Parser::parser(result), "./results/");
+                Serialization::obj2file(Parser::parser(result), "./results/");
             }
         }
     });
