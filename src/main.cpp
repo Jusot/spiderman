@@ -9,11 +9,11 @@ int main(int argc, char *argv[])
 
     ::std::vector<::std::thread> threads;
 
-    // main thread
+    // request thread
     threads.emplace_back([&] { spdr.run(results); });
 
-    // sub thread
-    for (int i = 0; i < 5; ++i) threads.emplace_back([&] 
+    // parser thread
+    threads.emplace_back([&] 
     {
         ::std::pair<::std::string, ::std::string> result;
 
