@@ -9,6 +9,7 @@
 #include <string>
 #include <thread>
 #include <sstream>
+#include <fstream>
 #include <utility>
 #include <algorithm>
 #include <functional>
