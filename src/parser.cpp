@@ -19,6 +19,8 @@ WebSite& WebSite::operator=(WebSite &rhs)
     url = rhs.url;
     metas = rhs.metas;
     text = rhs.text;
+
+    return *this;
 }
 
 WebSite& WebSite::operator=(WebSite &&rhs) noexcept
@@ -26,6 +28,8 @@ WebSite& WebSite::operator=(WebSite &&rhs) noexcept
     ::std::swap(url, rhs.url);
     ::std::swap(metas, rhs.metas);
     ::std::swap(text, rhs.text);
+
+    return *this;
 }
 
 
