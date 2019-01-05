@@ -9,7 +9,7 @@ Response::Response(const ::std::string &data)
     ss >> reason; ss >> status_code; ss.get();
     ::std::getline(ss, reason); reason.pop_back();
 
-    auto header_endpos = data.find("\r\n\r\n") + (::std::size_t)4, html_beginpos = data.find("<html>");
+    auto header_endpos = data.find("\r\n\r\n") + 4, html_beginpos = data.find("<html>");
     body = html_beginpos == data.npos ? data.substr(header_endpos) : data.substr(html_beginpos);
 
     ::std::string tmp;
@@ -19,7 +19,7 @@ Response::Response(const ::std::string &data)
         auto pos = tmp.find(':');
         if (pos != tmp.npos)
         {
-            auto k = tmp.substr(0, pos), v = tmp.substr(pos + (::std::size_t)2);
+            auto k = tmp.substr(0, pos), v = tmp.substr(pos + 2);
             headers[k] += v;
         }
     }
@@ -49,7 +49,7 @@ Response& Response::operator=(Response &&rhs) noexcept
 ::std::string Request::gen_host(::std::string url)
 {
     auto pos = url.find("://");
-    if (pos != url.npos) url = url.substr(pos + (::std::size_t)3);
+    if (pos != url.npos) url = url.substr(pos + 3);
 
     pos = url.find("/");
     return pos == url.npos ? url : url.substr(0, pos);
@@ -58,7 +58,7 @@ Response& Response::operator=(Response &&rhs) noexcept
 ::std::string Request::gen_req(::std::string url)
 {
     auto pos = url.find("://");
-    if (pos != url.npos) url = url.substr(pos + (::std::size_t)3);
+    if (pos != url.npos) url = url.substr(pos + 3);
 
     pos = url.find('/');
     return pos == url.npos ? "/" : url.substr(pos);
