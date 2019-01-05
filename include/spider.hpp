@@ -30,5 +30,5 @@ public:
     
     bool finish();
 
-    void run(threadsafe_queue<::std::string> &results);
+    void run(threadsafe_queue<::std::pair<::std::string, ::std::string>> &results);
 };

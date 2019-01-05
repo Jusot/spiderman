@@ -64,7 +64,7 @@ bool Spider::finish()
     return finish_status;
 }
 
-void Spider::run(threadsafe_queue<::std::string> &results)
+void Spider::run(threadsafe_queue<::std::pair<::std::string, ::std::string>> &results)
 {
     while (!unprocessed.empty())
     {
@@ -74,7 +74,7 @@ void Spider::run(threadsafe_queue<::std::string> &results)
         processed.insert(url);
 
         auto response_body = Request::get(url).body;
-        results.push(response_body);
+        results.push({ url, response_body });
 
         for (auto new_url : gen_urls(response_body))
         {
