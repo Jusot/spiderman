@@ -5,12 +5,21 @@ class WebSite
 {
 public:
 
-    WebSite();
-    WebSite(WebSite &&ws);
+    ::std::string url, text;
+    ::std::unordered_map<::std::string, ::std::string> metas;
 
-    WebSite& operator=(WebSite &&ws);
 
+    WebSite(const ::std::string &url, 
+        ::std::unordered_map<::std::string, ::std::string> &&metas, 
+        ::std::string &&text);
+
+    WebSite(WebSite &&ws) noexcept = default;
     ~WebSite() = default;
+
+
+    WebSite& operator=(WebSite &rhs);
+
+    WebSite& operator=(WebSite &&rhs) noexcept;
 };
 
 
