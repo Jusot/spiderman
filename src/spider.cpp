@@ -19,7 +19,7 @@ bool Spider::is_legal_and_complete(::std::string &url)
         url = host + url;
         return true;
     }
-    else if (url.find("http") != url.npos || url.find("www") != url.npos) return true;
+    else if (url.find("http") != url.npos || url.find(".") != url.npos) return true;
     else return false;
 }
 
@@ -71,10 +71,14 @@ void Spider::run(threadsafe_queue<::std::pair<::std::string, ::std::string>> &re
         auto url = unprocessed.front();
         unprocessed.pop();
 
-        processed.insert(url);
+        if (has_processed(url)) continue;
+        else processed.insert(url);
+
+#ifdef LOGGING
+        ::std::cout << "[LOGGING] FIND NEW URL: " << url << ::std::endl;
+#endif // LOGGING
 
         auto response_body = Request::get(url).body;
-        results.push({ url, response_body });
 
         for (auto new_url : gen_urls(response_body))
         {
@@ -83,6 +87,8 @@ void Spider::run(threadsafe_queue<::std::pair<::std::string, ::std::string>> &re
                 unprocessed.push(new_url);
             }
         }
+
+        results.push({ url, std::move(response_body) });
     }
 
     finish_status = true;
