@@ -11,12 +11,10 @@ TARGET = puef
 BIN_TARGET = $(DIR_BIN)/$(TARGET)
 
 CC = g++
-CFLAGS = -g -Wall -std=c++11 -I$(DIR_INC)
-
-CPPFLAGS = -std=c++11
+CFLAGS = -g -Wall -std=c++11 -I$(DIR_INC) 
 
 ${BIN_TARGET}: ${OBJ} | ${DIR_BIN}
-	${CC} ${OBJ} -o $@
+	${CC} ${OBJ} -pthread -o $@
 
 ${DIR_OBJ}/%.o: ${DIR_SRC}/%.cpp | ${DIR_OBJ}
 	${CC} ${CFLAGS} -c $< -o $@
