@@ -35,3 +35,5 @@
 .vscode/
 .vs/
 puef/
+bin/
+obj/
