@@ -7,9 +7,9 @@ static const double Alpha            = 0.6;
 
 WebSite::WebSite(
     const ::std::string &url,
-    ::std::unordered_map<::std::string, ::std::string> &&metas,
-    ::std::string &&text
-) : url(url), metas(::std::move(metas)), text(::std::move(text))
+    ::std::string &&text,
+    ::std::unordered_map<::std::string, ::std::string> &&metas
+) : url(url), text(::std::move(text)), metas(::std::move(metas))
 {
     // it's completed
 }
@@ -68,7 +68,7 @@ _parse_metas_and_mark_tags_and_filter(
     
     while (!checkpre("<body"))
     {
-        if (checkpre("<meta"))
+        if (checkpre("<meta "))
         {
             ::std::string name, content;
             while (source[i] != '>')
@@ -97,8 +97,20 @@ _parse_metas_and_mark_tags_and_filter(
         else if (checkpre("<!--"))    while (!checkpre("-->")) ++i;
         else if (checkpre("<style"))  while (!checkpre("/style>")) ++i;
         else if (checkpre("<script")) while (!checkpre("/script>")) ++i;
-        else if (source[i] == '<')    while (i != source.length() && source[i - 1] != '>') indexs.push_back({ i++, 0 });
-        else    indexs.push_back({ i++, 1 });
+        // fix bug when meeting '><'
+        else if (source[i] == '<')    while (i != source.length() && source[i++ - 1] != '>') indexs.push_back({ i - 1, 0 });
+        else    switch (source[i])
+        {
+        case ' ':
+        case '\t':
+        case '\n':
+            indexs.push_back({ i++, 1 });
+            while (i != source.length() && (source[i] == ' ' || source[i] == '\t' || source[i] == '\n')) ++i;
+            break;
+        default:
+            indexs.push_back({ i++, 1 });
+            break;
+        }
     }
 
     return metas;
@@ -124,7 +136,7 @@ static size_t _calculate_mid(
         {
             s += indexs[i].second;
         }
-        alphas[_end] = s / LengthOfInterval;
+        alphas.push_back(s / LengthOfInterval);
 
         if (alphas[_end] >= Alpha)
         {
@@ -208,6 +220,7 @@ WebSite Parser::parser(const ::std::pair<::std::string, ::std::string> &result)
 
     auto metas = _parse_metas_and_mark_tags_and_filter(source, indexs);
 
+
     auto mid = _calculate_mid(indexs);
     auto x   = _calculate_x(mid, indexs),
          y   = _calculate_y(mid, indexs);
@@ -216,5 +229,5 @@ WebSite Parser::parser(const ::std::pair<::std::string, ::std::string> &result)
     ::std::string text;
     for (auto i = x; i <= y; ++i) if (indexs[i].second) text += source[indexs[i].first];
 
-    return WebSite(url, ::std::move(metas), ::std::move(text));
+    return WebSite(url, ::std::move(text), ::std::move(metas));
 }

@@ -9,10 +9,11 @@ public:
     ::std::unordered_map<::std::string, ::std::string> metas;
 
 
-    WebSite(const ::std::string &url, 
-        ::std::unordered_map<::std::string, ::std::string> &&metas, 
-        ::std::string &&text);
+    WebSite(const ::std::string &url,
+        ::std::string &&text,
+        ::std::unordered_map<::std::string, ::std::string> &&metas);
 
+    WebSite() = default;
     WebSite(WebSite &&ws) noexcept = default;
     ~WebSite() = default;
 
