@@ -21,7 +21,11 @@ int main(int argc, char *argv[])
         {
             if (results.try_pop(result))
             {
-                Serialization::obj2file(Parser::parser(result), "./results/");
+#ifdef LOGGING
+                ::std::cout << "[LOGGING] PARSE CONTENT FROM URL: " << result.first << ::std::endl;
+#endif // LOGGING
+
+                Serialization::obj2file(Parser::parser(result), "./results");
             }
         }
     });
