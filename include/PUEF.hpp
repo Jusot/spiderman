@@ -11,6 +11,7 @@
 #include <sstream>
 #include <fstream>
 #include <utility>
+#include <iostream>
 #include <algorithm>
 #include <functional>
 #include <unordered_map>
@@ -22,6 +23,9 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <sys/socket.h>
+
+
+#define LOGGING
 
 
 #include "threadsafe_queue.hpp"
