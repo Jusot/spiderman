@@ -5,13 +5,13 @@ class WebSite
 {
 public:
 
-    ::std::string url, text;
-    ::std::unordered_map<::std::string, ::std::string> metas;
+    std::string url, text;
+    std::unordered_map<std::string, std::string> metas;
 
 
-    WebSite(const ::std::string &url,
-        ::std::string &&text,
-        ::std::unordered_map<::std::string, ::std::string> &&metas);
+    WebSite(const std::string &url,
+        std::string &&text,
+        std::unordered_map<std::string, std::string> &&metas);
 
     WebSite() = default;
     WebSite(WebSite &&ws) noexcept = default;
@@ -28,5 +28,5 @@ class Parser
 {
 public:
 
-    static WebSite parser(const ::std::pair<::std::string, ::std::string> &result);
+    static WebSite parser(const std::pair<std::string, std::string> &result);
 };
