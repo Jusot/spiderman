@@ -1,36 +1,34 @@
 #include "PUEF.hpp"
 
 
+
 int main(int argc, char *argv[])
 {
-    threadsafe_queue<::std::pair<::std::string, ::std::string>> results;
+    Spider spdr("economy.gmw.cn");
 
-    Spider spdr("www.gmw.cn", "www.gmw.cn");
+    std::queue<std::pair<std::string, std::string>> results;
 
-    ::std::vector<::std::thread> threads;
+    std::thread request_thread([&] { spdr.run(results); });
 
-    // request thread
-    threads.emplace_back([&] { spdr.run(results); });
-
-    // parser thread
-    threads.emplace_back([&] 
+    std::thread parse_thread([&] 
     {
-        ::std::pair<::std::string, ::std::string> result;
-
-        while (!spdr.finish() || !results.is_empty())
+        while (!spdr.finish())
         {
-            if (results.try_pop(result))
-            {
-#ifdef LOGGING
-                ::std::cout << "[LOGGING] PARSE CONTENT FROM URL: " << result.first << ::std::endl;
-#endif // LOGGING
+            if (results.empty()) continue;
 
-                Serialization::obj2file(Parser::parser(result), "./results");
-            }
+            auto result = results.front();
+            results.pop();
+
+#ifdef DEBUG
+            std::cout << "[DEBUG] [READY TO PARSING] " << result.first << std::endl;
+#endif // DEBUG
+
+            Serialization::obj2file(Parser::parser(result), "./results");
         }
     });
 
-    for (auto &td : threads) td.join();
+    request_thread.join();
+    parse_thread.join();
 
     return 0;
 }
