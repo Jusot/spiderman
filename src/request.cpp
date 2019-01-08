@@ -1,19 +1,21 @@
 #include "PUEF.hpp"
 
 
-Response::Response() : status_code(400) {}
+Response::Response() {}
 
-Response::Response(const ::std::string &data)
+Response::Response(const std::string &data)
 {
-    ::std::stringstream ss(data);
+    if (data.empty()) return;
+
+    std::stringstream ss(data);
     ss >> reason; ss >> status_code; ss.get();
-    ::std::getline(ss, reason); reason.pop_back();
+    std::getline(ss, reason); reason.pop_back();
 
     auto header_endpos = data.find("\r\n\r\n") + 4, html_beginpos = data.find("<html>");
     body = html_beginpos == data.npos ? data.substr(header_endpos) : data.substr(html_beginpos);
 
-    ::std::string tmp;
-    while (::std::getline(ss, tmp) && tmp != "\r")
+    std::string tmp;
+    while (std::getline(ss, tmp) && tmp != "\r")
     {
         tmp.pop_back();
         auto pos = tmp.find(':');
@@ -37,16 +39,16 @@ Response& Response::operator=(Response &rhs)
 
 Response& Response::operator=(Response &&rhs) noexcept
 {
-    ::std::swap(status_code, rhs.status_code);
-    ::std::swap(reason, rhs.reason);
-    ::std::swap(body, rhs.body);
-    ::std::swap(headers, rhs.headers);
+    std::swap(status_code, rhs.status_code);
+    std::swap(reason, rhs.reason);
+    std::swap(body, rhs.body);
+    std::swap(headers, rhs.headers);
 
     return *this;
 }
 
 
-::std::string Request::gen_host(::std::string url)
+std::string Request::gen_host(std::string url)
 {
     auto pos = url.find("://");
     if (pos != url.npos) url = url.substr(pos + 3);
@@ -55,7 +57,7 @@ Response& Response::operator=(Response &&rhs) noexcept
     return pos == url.npos ? url : url.substr(0, pos);
 }
 
-::std::string Request::gen_req(::std::string url)
+std::string Request::gen_req(std::string url)
 {
     auto pos = url.find("://");
     if (pos != url.npos) url = url.substr(pos + 3);
@@ -64,9 +66,9 @@ Response& Response::operator=(Response &&rhs) noexcept
     return pos == url.npos ? "/" : url.substr(pos);
 }
 
-Response Request::request(const ::std::string &url, const ::std::string method, ::std::unordered_map<::std::string, ::std::string> &headers)
+Response Request::request(const std::string &url, const std::string method, std::unordered_map<std::string, std::string> &headers)
 {
-    ::std::string response_msg;
+    std::string response_msg;
 
 
     // init server_addr
@@ -89,11 +91,16 @@ Response Request::request(const ::std::string &url, const ::std::string method, 
 
 
     // send request message to server
-    ::std::string request_msg = method + gen_req(url) + " HTTP/1.1\r\n";
+    std::string request_msg = method + gen_req(url) + " HTTP/1.1\r\n";
     for (auto &kv : headers) request_msg += kv.first + ": " + kv.second + "\r\n";
     request_msg += "\r\n";
 
-    send(socket_fd, request_msg.c_str(), request_msg.length(), 0);
+#ifdef DEBUG
+    std::cout << "[DEBUG] [REQUEST] [MESSAGE] \n" << request_msg << std::endl;
+#endif // DEBUG
+
+    if (send(socket_fd, request_msg.c_str(), request_msg.length(), 0) < 0)
+        return Response();
 
 
     // receive response message from server
@@ -108,10 +115,14 @@ Response Request::request(const ::std::string &url, const ::std::string method, 
     close(socket_fd);
     freeaddrinfo(result);
 
+#ifdef DEBUG
+    std::cout << "[DEBUG] [REQUEST] [OVER]" << std::endl;
+#endif // DEBUG
+
     return Response(response_msg);
 }
 
-Response Request::get(const ::std::string &url, ::std::unordered_map<::std::string, ::std::string> headers)
+Response Request::get(const std::string &url, std::unordered_map<std::string, std::string> headers)
 {
     decltype(headers) hds = {
             {"Host", gen_host(url)},
