@@ -3,11 +3,11 @@
 
 #include <set>
 #include <queue>
-#include <mutex>
 #include <memory>
 #include <vector>
 #include <string>
 #include <thread>
+#include <cctype>
 #include <sstream>
 #include <fstream>
 #include <utility>
@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <functional>
 #include <unordered_map>
-#include <condition_variable>
 
 
 #include <cstring>
@@ -25,10 +24,10 @@
 #include <sys/socket.h>
 
 
+// #define DEBUG
 #define LOGGING
 
 
-#include "threadsafe_queue.hpp"
 #include "request.hpp"
 #include "spider.hpp"
 #include "parser.hpp"
