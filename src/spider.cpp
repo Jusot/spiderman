@@ -1,8 +1,10 @@
 #include "PUEF.hpp"
 
 
-Spider::Spider(const std::string url, const std::string url_limit) : finish_status(false), host(Request::gen_host(url)), url_limit(url_limit)
+Spider::Spider(std::string url, const std::string url_limit) : finish_status(false), host(Request::gen_host(url)), url_limit(url_limit)
 {
+    if (url.back() == '/') url.pop_back();
+
     if (url_limit == "") this->url_limit = url;
     unprocessed.push(url);
 }
@@ -15,12 +17,16 @@ bool Spider::has_processed(const std::string &url)
 bool Spider::is_legal_and_complete(std::string &url, const std::string &base)
 {
     if (url.find(".css") != url.npos || url.find(".js") != url.npos
-       || url.find("..") != url.npos || url.find(';') != url.npos
-       || url.find('\n') != url.npos || url.find("#") != url.npos
-       || url.find(':')  != url.npos) return false;
+       || url.find("..") != url.npos || url.find(';')   != url.npos
+       || url.find('\n') != url.npos || url.find("#")   != url.npos) return false;
     else if (url.find("http") != url.npos)
     {
         url = url.substr(url.find("://") + 3);
+        return true;
+    }
+    else if (url.find("//") == 0)
+    {
+        url = url.substr(2);
         return true;
     }
     else if (url.find(host) != url.npos) return true;
@@ -36,7 +42,7 @@ bool Spider::is_legal_and_complete(std::string &url, const std::string &base)
 
 bool Spider::meet_limit(const std::string &url)
 {
-    return url.find(url_limit) != url.npos;
+    return url.find(url_limit) == 0;
 }
 
 std::vector<std::string> Spider::gen_urls(const std::string &str, const std::string &base)
@@ -68,6 +74,10 @@ std::vector<std::string> Spider::gen_urls(const std::string &str, const std::str
             std::string url;
             while (it < str.cend() && *it != '"') url += *it++;
 
+#ifdef DEBUG
+            // std::cout << "[DEBUG] [ORIGIN NEW URL] " << url << std::endl;
+#endif // DEBUG
+
             if (is_legal_and_complete(url, base)) urls.push_back(url);
         }
         else ++it;
@@ -88,7 +98,9 @@ void Spider::run(std::queue<std::pair<std::string, std::string>> &results)
         auto url = unprocessed.front();
         unprocessed.pop();
 
-        if (url.back() == '/') url.pop_back();
+#ifdef DEBUG
+        // std::cout << "[DEBUG] [POP NEW URL] " << url << std::endl;
+#endif // DEBUG
 
         if (has_processed(url)) continue;
         else processed.insert(url);
@@ -100,7 +112,8 @@ void Spider::run(std::queue<std::pair<std::string, std::string>> &results)
 #endif // LOGGING
 
 #ifdef DEBUG
-        std::cout << "[LOGGING] [URL] [STATUS " << response.status_code << "] " << url << std::endl;
+        std::cout << "[DEBUG] [URL] [STATUS " << response.status_code << "] " << url << std::endl;
+        // std::cout << "[DEBUG] [RESPONSE]\n" << response.body << std::endl;
 #endif // DEBUG
 
         if (response.status_code >= 300) continue;
@@ -114,6 +127,11 @@ void Spider::run(std::queue<std::pair<std::string, std::string>> &results)
             if (meet_limit(new_url) && !has_processed(new_url))
             {
                 if (new_url.back() == '/') new_url.pop_back();
+
+#ifdef DEBUG
+                std::cout << "[DEBUG] [FIND NEW URL] " << new_url << std::endl;
+#endif // DEBUG
+
                 unprocessed.push(new_url);
             }
         }

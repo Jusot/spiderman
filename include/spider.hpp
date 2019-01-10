@@ -25,7 +25,7 @@ private:
 
 public:
 
-    Spider(const std::string target, const std::string url_limit = "");
+    Spider(std::string target, const std::string url_limit = "");
 
     
     const bool finish();
