@@ -10,17 +10,25 @@ static std::string _gen_host(std::string url)
     return pos == url.npos ? url : url.substr(0, pos);
 }
 
-static std::string _gen_filename(
+static std::string _gen_filepath(
+    std::string dirpath,
     std::string date,
     std::string url,
     std::string title)
 {
     // std::cout << date << std::endl << url << std::endl << title << std::endl;
 
-    if (date.empty() || url.empty() || title.empty()) return "";
-    return '/' + date 
-         + '-' + _gen_host(url) 
-         + '-' + title + ".txt";
+    if (url.empty() || title.empty()) return "";
+    
+    if (dirpath.back() == '/') dirpath.pop_back();
+
+    auto prepath = dirpath
+        + '/' + _gen_host(url)
+        + (date.empty() ? "" : '/' + date);
+
+    system(("mkdir -p " + prepath).c_str());
+
+    return prepath + '/' + title + ".txt";
 }
 
 
@@ -28,14 +36,23 @@ bool Serialization::obj2file(
     WebSite website,
     const std::string &target_dirpath)
 {
-    auto filename = _gen_filename(
+    auto filepath = _gen_filepath(
+        target_dirpath,
         website.metas["publishdate"], 
         website.url, 
         website.metas["title"]);
 
-    if (filename.empty()) return false;
+    if (filepath.empty()) return false;
 
-    std::ofstream fout(target_dirpath + filename);
+#ifdef DEBUG
+    std::cout << "[DEBUG] [SERIALIZATION] [FILENAME] [" << filename << "]" << std::endl;
+#endif // DEBUG
+
+    std::ofstream fout(filepath);
+
+#ifdef LOGGING
+    // std::cout << "[LOGGING] [SERIALIZATION] [STATUS " << fout.is_open() << "]" << std::endl;
+#endif // LOGGING
 
     if (!fout.is_open()) return false;
 
