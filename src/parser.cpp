@@ -114,6 +114,7 @@ _parse_metas_and_mark_tags_and_filter(
             indexs.push_back({ i++, 0 });
             while (i < source.length() && source[i - 1] != '>') indexs.push_back({ i++, 0 });
         }
+        else if (checkpre("&nbsp;"));
         else if (source[i] == ' '
               || source[i] == '\n'
               || source[i] == '\t')
@@ -131,7 +132,7 @@ _parse_metas_and_mark_tags_and_filter(
         auto &content = meta.second;
         content.erase(std::remove_if(content.begin(),
             content.end(),
-            [](unsigned char x) {return std::isspace(x); }),
+            [](unsigned char x) {return x == ' ' || x == '\n' || x == '\t'; }),
             content.end());
     }
 
