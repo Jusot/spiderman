@@ -73,6 +73,7 @@ _parse_metas_and_mark_tags_and_filter(
     while (i < source.length())
     {
         if (checkpre("<body") || checkpre("<BODY")) break;
+        else if (checkpre("&nbsp;"));
         else if (checkpre("<meta ") || checkpre("<META "))
         {
             std::string name, content;
