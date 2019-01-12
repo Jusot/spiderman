@@ -35,6 +35,11 @@ WebSite& WebSite::operator=(WebSite &&rhs) noexcept
 
 // --- static functions for Parser::parser ---
 
+static bool _isspace(const char c)
+{
+    return c == ' ' || c == '\n' || c == '\t' || c == '\r';
+}
+
 /*
  * O(n)
  * parse metas in header
@@ -117,13 +122,10 @@ _parse_metas_and_mark_tags_and_filter(
             while (i < source.length() && source[i - 1] != '>') indexs.push_back({ i++, 0 });
         }
         else if (checkpre("&nbsp;"));
-        else if (source[i] == ' '
-              || source[i] == '\n'
-              || source[i] == '\t')
+        else if (_isspace(source[i]))
         {
             indexs.push_back({ i++, 1 });
-            while (i < source.length()
-               && (source[i] == ' ' || source[i] == '\n' || source[i] == '\t')) ++i;
+            while (i < source.length() && _isspace(source[i])) ++i;
         }
         else indexs.push_back({ i++, 1 });
     }
@@ -134,7 +136,7 @@ _parse_metas_and_mark_tags_and_filter(
         auto &content = meta.second;
         content.erase(std::remove_if(content.begin(),
             content.end(),
-            [](unsigned char x) {return x == ' ' || x == '\n' || x == '\t'; }),
+            _isspace),
             content.end());
     }
 
