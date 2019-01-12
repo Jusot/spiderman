@@ -4,14 +4,14 @@ DIR_OBJ = ./obj
 DIR_BIN = ./bin
 
 SRC = $(wildcard ${DIR_SRC}/*.cpp)
-OBJ = $(patsubst %.cpp, ${DIR_OBJ}/%.o, $(notdir ${SRC})) 
+OBJ = $(patsubst %.cpp, ${DIR_OBJ}/%.o, $(notdir ${SRC}))
 
 TARGET = puef
 
 BIN_TARGET = $(DIR_BIN)/$(TARGET)
 
 CC = g++
-CFLAGS = -g -Wall -std=c++11 -I$(DIR_INC) 
+CFLAGS = -g -Wall -std=c++11 -I$(DIR_INC)
 
 ${BIN_TARGET}: ${OBJ} | ${DIR_BIN}
 	${CC} ${OBJ} -pthread -o $@

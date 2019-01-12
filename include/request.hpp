@@ -35,5 +35,5 @@ public:
     static Response request(const std::string &url, const std::string method, std::unordered_map<std::string, std::string> &headers);
 
     static Response get(const std::string &url, std::unordered_map<std::string, std::string> headers = {});
-        
+
 };

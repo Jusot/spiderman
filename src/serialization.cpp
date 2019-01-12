@@ -19,7 +19,7 @@ static std::string _gen_filepath(
     // std::cout << date << std::endl << url << std::endl << title << std::endl;
 
     if (url.empty() || title.empty()) return "";
-    
+
     if (dirpath.back() == '/') dirpath.pop_back();
 
     auto prepath = dirpath
@@ -38,8 +38,8 @@ bool Serialization::obj2file(
 {
     auto filepath = _gen_filepath(
         target_dirpath,
-        website.metas["publishdate"], 
-        website.url, 
+        website.metas["publishdate"],
+        website.url,
         website.metas["title"]);
 
     if (filepath.empty()) return false;
@@ -57,7 +57,7 @@ bool Serialization::obj2file(
     if (!fout.is_open()) return false;
 
     fout << website.url << std::endl;
-    
+
     for (auto &meta : website.metas)
     {
         fout << meta.first << ':' << meta.second << '\n';
@@ -88,7 +88,7 @@ WebSite Serialization::file2obj(
     fin.seekg(0);
 
     std::getline(fin, website.url);
-    
+
     std::string tmp;
     while (std::getline(fin, tmp) && !tmp.empty())
     {

@@ -36,15 +36,16 @@ WebSite& WebSite::operator=(WebSite &&rhs) noexcept
 // --- static functions for Parser::parser ---
 
 /*
- * 一次遍历
- * 记录所有索引以及是否为标签
- * 过滤掉注释<!--.*?-->
- * 以及<script>.*?</script>
- * 和<style>.*?</style>部分
+ * O(n)
+ * parse metas in header
+ * store indexs and the corresponding character of an index consists of a label
+ * filter comments between '<!--' and '-->'
+ * filter js code between '<script' and '/script>'
+ * filter css code between '<style' and '/style>'
  */
 static std::unordered_map<std::string, std::string>
 _parse_metas_and_mark_tags_and_filter(
-    const std::string &source, 
+    const std::string &source,
     std::vector<std::pair<size_t, bool>> &indexs)
 {
     std::unordered_map<std::string, std::string> metas;
@@ -65,7 +66,7 @@ _parse_metas_and_mark_tags_and_filter(
         i = tmp;
         return true;
     };
-    
+
 #ifdef DEBUG
     std::cout << "[DEBUG] [PARSING] [METAS]" << std::endl;
 #endif // DEBUG
@@ -107,7 +108,7 @@ _parse_metas_and_mark_tags_and_filter(
             while (i < source.length() && !checkpre("-->")) ++i;
         else if (checkpre("<style") || checkpre("<STYLE"))
             while (i < source.length() && !checkpre("/style>") && !checkpre("/STYLE>")) ++i;
-        else if (checkpre("<script") || checkpre("<SCRIPT")) 
+        else if (checkpre("<script") || checkpre("<SCRIPT"))
             while (i < source.length() && !checkpre("/script>") && !checkpre("/SCRIPT>")) ++i;
         // fix bug when meeting '><'
         else if (source[i] == '<')
@@ -121,7 +122,7 @@ _parse_metas_and_mark_tags_and_filter(
               || source[i] == '\t')
         {
             indexs.push_back({ i++, 1 });
-            while (i < source.length() 
+            while (i < source.length()
                && (source[i] == ' ' || source[i] == '\n' || source[i] == '\t')) ++i;
         }
         else indexs.push_back({ i++, 1 });
@@ -141,9 +142,10 @@ _parse_metas_and_mark_tags_and_filter(
 }
 
 /*
- * 一次遍历
- * 将indexs分为n个区间
- * 计算非标签占比>=Alpha的最长连续区间[start, end]
+ * O(n)
+ * divide the indexs into n intervals
+ * calculate the longest continuous interval, [start, end], each text percent >= Alpha
+ * return mid index
  */
 static size_t _calculate_mid(
     const std::vector<std::pair<size_t, bool>> &indexs)
@@ -156,8 +158,8 @@ static size_t _calculate_mid(
          ++_end, interval_i += LengthOfInterval)
     {
         double s = 0;
-        for (auto i = interval_i; 
-             i < std::min(interval_i + LengthOfInterval, indexs.size()); 
+        for (auto i = interval_i;
+             i < std::min(interval_i + LengthOfInterval, indexs.size());
              ++i)
         {
             s += indexs[i].second;
@@ -179,8 +181,9 @@ static size_t _calculate_mid(
 }
 
 /*
- * 一次遍历
- * 计算正文可能开始位置x
+ * O(n)
+ * calculate the possible start position x of the text
+ * return x
  */
 static size_t _calculate_x(
     size_t mid,
@@ -208,11 +211,12 @@ static size_t _calculate_x(
 }
 
 /*
- * 一次遍历
- * 计算正文可能结束位置y
+ * O(n)
+ * calculate the possible end position y of the text
+ * return y
  */
 static size_t _calculate_y(
-    size_t mid, 
+    size_t mid,
     const std::vector<std::pair<size_t, bool>> &indexs)
 {
     size_t y = indexs.size() - 1, _y = indexs.size() - 1, ltxts = 0, rtags = 0, max_sum;

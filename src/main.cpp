@@ -5,14 +5,14 @@
 int main(int argc, char *argv[])
 {
     // Spider spdr("blog.sina.com.cn");
-    Spider spdr("house.people.com.cn");
-    // Spider spdr("yangsheng.gmw.cn");
+    // Spider spdr("house.people.com.cn");
+    Spider spdr("yangsheng.gmw.cn");
 
     std::queue<std::pair<std::string, std::string>> results;
 
     std::thread request_thread([&] { spdr.run(results); });
 
-    std::thread parse_thread([&] 
+    std::thread parse_thread([&]
     {
         while (!spdr.finish())
         {

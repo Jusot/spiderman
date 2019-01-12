@@ -27,7 +27,7 @@ public:
 
     Spider(std::string target, const std::string url_limit = "");
 
-    
+
     const bool finish();
 
     void run(std::queue<std::pair<std::string, std::string>> &results);
