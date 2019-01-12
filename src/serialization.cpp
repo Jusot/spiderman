@@ -3,11 +3,31 @@
 
 static std::string _conv2utf8(const std::string &source, const std::string &charset)
 {
-    if (charset.empty()) return source;
+    if (charset.empty() || charset == "utf-8" || charset == "UTF-8") return source;
 
     std::string res;
 
-    return source;
+    auto inlen = source.size() + 1;
+    auto inbuf = (char *)malloc(inlen);
+    inbuf[0] = 0;
+    strcat(inbuf, source.c_str());
+
+    auto outlen = inlen * 2;
+    auto outbuf = (char *)malloc(outlen);
+
+    auto inbuf_head = inbuf, outbuf_head = outbuf;
+
+    // auto cd = iconv_open("utf-8", "gb2312");
+    auto cd = iconv_open("utf-8", charset.c_str());
+    iconv(cd, &inbuf, &inlen, &outbuf, &outlen);
+    iconv_close(cd);
+
+    res = outbuf_head;
+
+    free(inbuf_head);
+    free(outbuf_head);
+
+    return res;
 }
 
 
