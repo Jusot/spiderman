@@ -89,10 +89,21 @@ _parse_metas_and_mark_tags_and_filter(
                     name += source[i++];
                 else if (checkpre("content=\"")) while (source[i] != '"')
                     content += source[i++];
+                else if (checkpre("charset=\""))
+                {
+                    name = "charset";
+                    while (source[i] != '"') content += source[i++];
+                }
                 else ++i;
             }
             if (!name.empty() && !content.empty())
                 metas[name] = content;
+            else if (content.find("charset") != content.npos)
+            {
+                auto cspos = content.find("charset");
+                auto sppos = content.find(' ', cspos);
+                metas["charset"] = content.substr(cspos + 8, sppos == content.npos ? content.npos : sppos - cspos - 8);
+            }
         }
         else if (checkpre("<title>") || checkpre("<TITLE>"))
         {
