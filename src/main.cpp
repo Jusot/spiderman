@@ -4,9 +4,9 @@
 
 int main(int argc, char *argv[])
 {
-    // Spider spdr("blog.sina.com.cn");
+    Spider spdr("blog.sina.com.cn");
     // Spider spdr("house.people.com.cn");
-    Spider spdr("yangsheng.gmw.cn");
+    // Spider spdr("yangsheng.gmw.cn");
 
     std::queue<std::pair<std::string, std::string>> results;
 

@@ -20,10 +20,10 @@ bool Spider::is_legal_and_complete(std::string &url, const std::string &base)
        || url.find("..") != url.npos || url.find(';')   != url.npos
        || url.find('\n') != url.npos || url.find("#")   != url.npos
        || url.find('@')  != url.npos) return false;
-    else if (url.find("http") != url.npos)
+    else if (url.find("http") != url.npos || url.find("://") != url.npos)
     {
         url = url.substr(url.find("://") + 3);
-        return true;
+        return meet_limit(url);
     }
     else if (url.find("//") == 0)
     {
