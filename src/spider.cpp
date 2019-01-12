@@ -18,7 +18,8 @@ bool Spider::is_legal_and_complete(std::string &url, const std::string &base)
 {
     if (url.find(".css") != url.npos || url.find(".js") != url.npos
        || url.find("..") != url.npos || url.find(';')   != url.npos
-       || url.find('\n') != url.npos || url.find("#")   != url.npos) return false;
+       || url.find('\n') != url.npos || url.find("#")   != url.npos
+       || url.find('@')  != url.npos) return false;
     else if (url.find("http") != url.npos)
     {
         url = url.substr(url.find("://") + 3);
