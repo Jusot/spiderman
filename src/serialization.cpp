@@ -1,6 +1,16 @@
 #include "PUEF.hpp"
 
 
+static std::string _conv2utf8(const std::string &source, const std::string &charset)
+{
+    if (charset.empty()) return source;
+
+    std::string res;
+
+    return source;
+}
+
+
 static std::string _gen_host(std::string url)
 {
     auto pos = url.find("://");
@@ -36,11 +46,13 @@ bool Serialization::obj2file(
     WebSite website,
     const std::string &target_dirpath)
 {
+    auto &charset = website.metas["charset"];
+
     auto filepath = _gen_filepath(
         target_dirpath,
         website.metas["publishdate"],
         website.url,
-        website.metas["title"]);
+        _conv2utf8(website.metas["title"], charset));
 
     if (filepath.empty()) return false;
 
@@ -56,15 +68,15 @@ bool Serialization::obj2file(
 
     if (!fout.is_open()) return false;
 
-    fout << website.url << std::endl;
+    fout << _conv2utf8(website.url, charset) << std::endl;
 
     for (auto &meta : website.metas)
     {
-        fout << meta.first << ':' << meta.second << '\n';
+        fout << _conv2utf8(meta.first, charset) << ':' << _conv2utf8(meta.second, charset) << '\n';
     }
     fout << std::endl;
 
-    fout << website.text << std::endl;
+    fout << _conv2utf8(website.text, charset) << std::endl;
 
     fout.close();
 
