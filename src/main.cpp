@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     std::thread parse_thread([&]
     {
-        while (!spdr.finish())
+        while (!spdr.finish() || !results.empty())
         {
             if (results.empty()) continue;
 
