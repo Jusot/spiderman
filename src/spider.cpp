@@ -32,7 +32,7 @@ bool Spider::is_legal_and_complete(std::string &url, const std::string &base)
     }
     else if (url.find(host) != url.npos) return true;
 
-    if (url[0] == '/') url = host + url;
+    if (url[0] == '/') url = Request::gen_host(base) + url;
     else
     {
         auto end_pos = base.rfind('/');
