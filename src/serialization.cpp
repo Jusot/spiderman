@@ -31,15 +31,6 @@ static std::string _conv2utf8(const std::string &source, const std::string &char
 }
 
 
-static std::string _gen_host(std::string url)
-{
-    auto pos = url.find("://");
-    if (pos != url.npos) url = url.substr(pos + 3);
-
-    pos = url.find("/");
-    return pos == url.npos ? url : url.substr(0, pos);
-}
-
 static std::string _gen_filepath(
     std::string dirpath,
     std::string date,
@@ -53,7 +44,7 @@ static std::string _gen_filepath(
     if (dirpath.back() == '/') dirpath.pop_back();
 
     auto prepath = dirpath
-        + '/' + _gen_host(url)
+        + '/' + Request::gen_host(url)
         + (date.empty() ? "" : '/' + date);
 
     system(("mkdir -p " + prepath).c_str());
