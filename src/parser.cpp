@@ -79,7 +79,6 @@ _parse_metas_and_mark_tags_and_filter(
     while (i < source.length())
     {
         if (checkpre("<body") || checkpre("<BODY")) break;
-        else if (checkpre("&nbsp;"));
         else if (checkpre("<meta ") || checkpre("<META "))
         {
             std::string name, content;
@@ -108,7 +107,7 @@ _parse_metas_and_mark_tags_and_filter(
         else if (checkpre("<title>") || checkpre("<TITLE>"))
         {
             std::string content;
-            while (i < source.length() && !checkpre("</title>") && !checkpre("</TITLE>")) content += source[i++];
+            while (i < source.length() && !checkpre("</title>") && !checkpre("</TITLE>")) if (!checkpre("&nbsp;")) content += source[i++];
             metas["title"] = content;
         }
         else ++i;
