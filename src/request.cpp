@@ -72,7 +72,7 @@ Response Request::request(const std::string &url, const std::string method, std:
 
 
     // init server_addr
-    addrinfo hints, *result;
+    addrinfo hints, *result = nullptr;
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
