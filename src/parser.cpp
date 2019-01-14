@@ -167,7 +167,7 @@ static size_t _calculate_mid(
     size_t start = 0, end = 0;
 
     for (size_t _start = 0, _end = 0, interval_i = 0;
-         _end < indexs.size() / LengthOfInterval;
+         _end <= indexs.size() / LengthOfInterval;
          ++_end, interval_i += LengthOfInterval)
     {
         double s = 0;
