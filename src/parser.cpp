@@ -96,8 +96,10 @@ _parse_metas_and_mark_tags_and_filter(
                 else ++i;
             }
             if (!name.empty() && !content.empty())
-                metas[name] = content;
-            else if (content.find("charset") != content.npos)
+            {
+                if (!metas.count(name) || name != "charset") metas[name] = content;
+            }
+            else if (!metas.count("charset") && content.find("charset") != content.npos)
             {
                 auto cspos = content.find("charset");
                 auto sppos = content.find(' ', cspos);

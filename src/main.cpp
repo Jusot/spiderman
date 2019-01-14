@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
     Spider spdr("house.people.com.cn");
     // Spider spdr("yangsheng.gmw.cn");
     // Spider spdr("house.people.com.cn/n1/2018/0808/c164220-30217070.html", "house.people.com");
+    // Spider spdr("house.people.com.cn/GB/416283/421382/index.html");
 
     std::queue<std::pair<std::string, std::string>> results;
 
